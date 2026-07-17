@@ -20,8 +20,7 @@ export const products: Product[] = [
     id: "classic-tall-trousers",
     name: "Classic Tall Hlače",
     category: "Hlače",
-    // Privremena cijena dok klijent ne potvrdi prodajnu cijenu.
-    priceCents: 8900,
+    priceCents: 4000,
     image: "/images/classic-tall-trousers.png",
     images: [
       "/images/classic-tall-trousers.png",
