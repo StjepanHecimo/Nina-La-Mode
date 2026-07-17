@@ -17,9 +17,9 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
 
   return <div className="gallery">
     <div className="detail-image">
-      <Image className={active === 0 ? "model-view" : "product-view"} src={images[active]} alt={`${name} — fotografija ${active + 1} od ${images.length}`} fill priority={active === 0} sizes="(max-width: 800px) 100vw, 55vw" />
-      {hasMultiple && <><button className="gallery-arrow previous" type="button" onClick={previous} aria-label="Prethodna fotografija">←</button><button className="gallery-arrow next" type="button" onClick={next} aria-label="Sljedeća fotografija">→</button><span className="gallery-count">{String(active + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span></>}
+      <Image className={active === 0 ? "model-view" : "product-view"} src={images[active]} alt={`${name} — image ${active + 1} of ${images.length}`} fill priority={active === 0} sizes="(max-width: 800px) 100vw, 55vw" />
+      {hasMultiple && <><button className="gallery-arrow previous" type="button" onClick={previous} aria-label="Previous image">←</button><button className="gallery-arrow next" type="button" onClick={next} aria-label="Next image">→</button><span className="gallery-count">{String(active + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span></>}
     </div>
-    {hasMultiple && <div className="gallery-thumbnails">{images.map((image, index) => <button key={`${image}-${index}`} className={active === index ? "active" : ""} type="button" onClick={() => setActive(index)} aria-label={`Prikaži fotografiju ${index + 1}`}><Image src={image} alt="" fill sizes="90px" /></button>)}</div>}
+    {hasMultiple && <div className="gallery-thumbnails">{images.map((image, index) => <button key={`${image}-${index}`} className={active === index ? "active" : ""} type="button" onClick={() => setActive(index)} aria-label={`Show image ${index + 1}`}><Image src={image} alt="" fill sizes="90px" /></button>)}</div>}
   </div>;
 }

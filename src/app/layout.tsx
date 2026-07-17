@@ -5,16 +5,34 @@ import { Header } from "@/components/header";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.ninilamode.com"),
   title: {
-    default: "Nina La Mode",
+    default: "Tall Women's Trousers | Nina La Mode",
     template: "%s | Nina La Mode",
   },
-  description: "Nina La Mode — bezvremenski krojevi i pažljivo odabrana ženska odjeća.",
+  description: "Premium high-waisted, wide-leg trousers designed specifically for tall women. Shop UK sizes 12–20 with an 88 cm inseam in breathable 100% cotton.",
+  applicationName: "Nina La Mode",
+  keywords: ["tall women's trousers", "long leg trousers women", "high waisted trousers tall women", "wide leg trousers UK", "88 cm inseam trousers", "tall fashion UK", "cotton trousers women"],
+  authors: [{ name: "Nina La Mode", url: "https://www.ninilamode.com" }],
+  creator: "Nina La Mode",
+  publisher: "Nina La Mode",
+  alternates: { canonical: "/", languages: { "en-GB": "/" } },
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: "/",
+    siteName: "Nina La Mode",
+    title: "Tall Women's Trousers | Nina La Mode",
+    description: "Classic high-waisted, wide-leg trousers made for tall women in UK sizes 12–20.",
+    images: [{ url: "/images/hero-tall-trousers.png", width: 1536, height: 1024, alt: "Nina La Mode Classic Tall trousers" }],
+  },
+  twitter: { card: "summary_large_image", title: "Tall Women's Trousers | Nina La Mode", description: "High-waisted, wide-leg cotton trousers designed for tall women.", images: ["/images/hero-tall-trousers.png"] },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="hr">
+    <html lang="en-GB">
       <body><Header />{children}<Footer /></body>
     </html>
   );
