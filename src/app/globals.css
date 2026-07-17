@@ -31,6 +31,9 @@ em { color:#a56d71; font-weight:400; }
 .button svg,.text-link svg,.quick-view svg { width:18px; }
 .button:hover { background:transparent; color:var(--navy); }
 .hero-index { position:absolute; z-index:2; bottom:26px; right:40px; margin:0; color:var(--cream); font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+@media (min-width:1400px) {
+  .hero>img { object-fit:contain; object-position:right center; }
+}
 .values { display:grid; grid-template-columns:repeat(3,1fr); background:var(--white); padding:44px clamp(24px,7vw,110px); border-bottom:1px solid var(--line); }
 .values article { display:flex; gap:25px; padding:8px 40px; border-right:1px solid var(--line); }
 .values article:last-child { border:0; }
