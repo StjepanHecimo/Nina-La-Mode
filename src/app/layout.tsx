@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: "Nina La Mode",
     title: "Tall Women's Trousers | Nina La Mode",
     description: "Classic high-waisted, wide-leg trousers made for tall women in UK sizes 12–20.",
-    images: [{ url: "/images/hero-tall-trousers.png", width: 1536, height: 1024, alt: "Nina La Mode Classic Tall trousers" }],
+    images: [{ url: "/images/hero-tall-trousers.png", width: 1535, height: 1025, alt: "Nina La Mode Classic Tall trousers" }],
   },
   twitter: { card: "summary_large_image", title: "Tall Women's Trousers | Nina La Mode", description: "High-waisted, wide-leg cotton trousers designed for tall women.", images: ["/images/hero-tall-trousers.png"] },
   robots: { index: true, follow: true },
