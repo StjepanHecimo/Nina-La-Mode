@@ -91,6 +91,8 @@ em { color:#a56d71; font-weight:400; }
 .detail-image { min-height:920px; position:relative; overflow:hidden; background:#ead8ca; }
 .detail-image img { object-fit:cover; object-position:center 22%; }
 .detail-image img.model-view { object-fit:contain; object-position:center; }
+.detail-image img.gallery-slide { opacity:0; transition:opacity .24s ease; }
+.detail-image img.gallery-slide.active { opacity:1; }
 .gallery { min-width:0; background:#ead8ca; }
 .gallery-arrow { position:absolute; z-index:3; top:50%; width:46px; height:46px; border:0; border-radius:50%; background:rgba(255,253,249,.9); box-shadow:0 4px 20px rgba(28,34,48,.1); transform:translateY(-50%); transition:.2s; }
 .gallery-arrow:hover { background:var(--navy); color:var(--cream); }

@@ -18,7 +18,7 @@ export default async function Home() {
   };
   return <main><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
     <section className="hero">
-      <Image src="/images/hero-tall-trousers.png" alt="Classic Tall high-waisted green trousers for tall women" fill priority sizes="100vw" />
+      <Image src="/images/hero-tall-trousers.png" alt="Classic Tall high-waisted green trousers for tall women" fill priority quality={95} sizes="100vw" />
       <div className="hero-content"><p className="kicker">Designed for tall women</p><h1>Made for <em>your</em> stride.</h1><p>Classic high-waisted trousers with a full-length, timeless silhouette — tailored to fit the way tall women deserve.</p><Link className="button" href="/shop/classic-tall-trousers">Discover the trousers <ArrowIcon /></Link></div>
       <p className="hero-index">N° 01 — Classic Tall</p>
     </section>
