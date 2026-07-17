@@ -1,0 +1,28 @@
+{
+  "name": "nina-la-mode",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "seed:products": "tsx --env-file=.env.local scripts/seed-products.ts"
+  },
+  "dependencies": {
+    "firebase": "latest",
+    "firebase-admin": "^14.2.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "tsx": "^4.23.1",
+    "typescript": "latest"
+  }
+}
