@@ -74,7 +74,7 @@ export function CheckoutForm() {
           <p>
             Your order reference is <strong>{result.orderNumber}</strong>.
           </p>
-          <p>We have received your order and will send payment and delivery confirmation by email.</p>
+          <p>Your payment is complete. We have emailed your order confirmation and receipt.</p>
           <Link className="button" href="/shop">
             Return to shop
           </Link>
