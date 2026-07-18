@@ -98,6 +98,7 @@ em { color:#a56d71; font-weight:400; }
 .shop-toolbar button { border:0; padding:9px 15px; background:transparent; font-size:11px; }
 .shop-toolbar button.active { background:var(--navy); color:var(--cream); }
 .shop-grid { row-gap:48px; }
+.shop-empty { padding:60px 20px; background:var(--white); color:#69707d; text-align:center; }
 .shop-grid:has(> .product-card:only-child) { width:min(720px,100%); margin:0 auto; }
 .product-page { padding-bottom:clamp(80px,10vw,150px); }
 .back-link { width:max-content; margin:28px clamp(24px,5vw,80px); display:flex; align-items:center; gap:12px; color:#626773; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
