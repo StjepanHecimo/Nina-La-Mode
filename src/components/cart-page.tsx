@@ -24,8 +24,7 @@ export function CartPage() {
           <strong>{formatPrice(item.priceCents * item.quantity)}</strong>
         </article>;
       })}</section>
-      <aside className="order-summary"><p className="kicker">Order summary</p><div><span>Subtotal</span><strong>{formatPrice(subtotalCents)}</strong></div><div><span>Delivery</span><span>Free in test checkout</span></div><div className="summary-total"><span>Total</span><strong>{formatPrice(subtotalCents)}</strong></div><Link className="button" href="/checkout">Proceed to checkout <ArrowIcon /></Link><Link className="text-link" href="/shop">Continue shopping</Link></aside>
+      <aside className="order-summary"><p className="kicker">Order summary</p><div><span>Subtotal</span><strong>{formatPrice(subtotalCents)}</strong></div><div><span>Delivery</span><span>Calculated at payment</span></div><div className="summary-total"><span>Order subtotal</span><strong>{formatPrice(subtotalCents)}</strong></div><Link className="button" href="/checkout">Proceed to checkout <ArrowIcon /></Link><Link className="text-link" href="/shop">Continue shopping</Link></aside>
     </div>
   </main>;
 }
-

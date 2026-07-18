@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "seed:products": "tsx --env-file=.env.local scripts/seed-products.ts"
+    "seed:products": "tsx --env-file=.env.local scripts/seed-products.ts",
+    "seed:admin": "tsx --env-file=.env.local scripts/seed-admin.ts"
   },
   "dependencies": {
     "@types/nodemailer": "^8.0.1",
