@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BagIcon, MenuIcon, SearchIcon, UserIcon } from "./icons";
+import { useCart } from "./cart-provider";
 
 const links = [
   ["/", "Home"], ["/shop", "Shop"], ["/about", "About"], ["/contact", "Contact"],
@@ -12,6 +13,7 @@ const links = [
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { itemCount, hydrated } = useCart();
 
   return (
     <header className="site-header">
@@ -23,7 +25,7 @@ export function Header() {
       <div className="header-actions">
         <button aria-label="Search"><SearchIcon /></button>
         <button aria-label="Account"><UserIcon /></button>
-        <button className="bag-button" aria-label="Shopping bag"><BagIcon /><span>0</span></button>
+        <Link className="bag-button" href="/cart" aria-label={`Shopping bag with ${itemCount} items`}><BagIcon /><span>{hydrated ? itemCount : 0}</span></Link>
       </div>
     </header>
   );

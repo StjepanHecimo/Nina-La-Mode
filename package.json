@@ -10,9 +10,11 @@
     "seed:products": "tsx --env-file=.env.local scripts/seed-products.ts"
   },
   "dependencies": {
+    "@types/nodemailer": "^8.0.1",
     "firebase": "latest",
     "firebase-admin": "^14.2.0",
     "next": "latest",
+    "nodemailer": "^9.0.3",
     "react": "latest",
     "react-dom": "latest"
   },

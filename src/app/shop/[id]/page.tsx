@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowIcon } from "@/components/icons";
 import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
+import { ProductPurchase } from "@/components/product-purchase";
 import { formatPrice, products as fallbackProducts } from "@/data/products";
 import { getProductById, getProducts } from "@/lib/products";
 
@@ -55,10 +56,7 @@ export default async function ProductPage({ params }: Props) {
     <section className="product-detail">
       <ProductGallery images={product.images?.length ? product.images : [product.image]} name={product.name} />
       <div className="detail-info"><p className="kicker">{product.category} · 2026 Collection</p><h1>{product.name}</h1><p className="detail-price">{formatPrice(product.priceCents)}</p><p className="detail-description">{product.description}</p>
-        <div className="detail-block"><p className="detail-label">Available colour</p><div className="color-options">{product.colors.map((color, index) => <span key={color.name} className={index === 0 ? "selected" : ""}><i style={{ backgroundColor: color.hex }} />{color.name}</span>)}</div></div>
-        <div className="detail-specs"><div className="detail-block"><p className="detail-label">Material</p><p>{product.material}</p></div>{product.inseam && <div className="detail-block"><p className="detail-label">Inseam</p><p>{product.inseam}</p></div>}{product.fit && <div className="detail-block"><p className="detail-label">Fit</p><p>{product.fit}</p></div>}</div>
-        <div className="detail-block"><p className="detail-label">UK sizes</p><div className="sizes">{product.sizes.map(size => <button key={size} type="button">{size}</button>)}</div></div>
-        <button className="button detail-cta" type="button">Add to bag <ArrowIcon /></button><p className="delivery-note">Free UK delivery over £100 · Returns within 14 days</p>
+        <ProductPurchase product={product} />
       </div>
     </section>
     {fallback.length > 0 ? <section className="continue-shopping"><div className="section-heading"><div><p className="kicker">Keep exploring</p><h2>You may also <em>love.</em></h2></div><Link className="text-link" href="/shop">View the collection <ArrowIcon /></Link></div><div className="product-grid">{(related.length >= 3 ? related : fallback).map(item => <ProductCard key={item.id} product={item}/>)}</div></section> : <section className="product-promise"><p className="kicker light">The Nina La Mode signature</p><h2>Cut for height.<br/><em>Made for every day.</em></h2><p>From the morning commute to evening plans, Classic Tall trousers follow your rhythm without compromising comfort or elegance.</p><Link className="text-link light" href="/shop">Back to shop <ArrowIcon /></Link></section>}

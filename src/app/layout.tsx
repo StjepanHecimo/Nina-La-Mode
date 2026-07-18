@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { CartProvider } from "@/components/cart-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en-GB">
-      <body><Header />{children}<Footer /></body>
+      <body><CartProvider><Header />{children}<Footer /></CartProvider></body>
     </html>
   );
 }
