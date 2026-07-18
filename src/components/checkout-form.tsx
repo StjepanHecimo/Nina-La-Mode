@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import Script from "next/script";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useCart } from "./cart-provider";
 import { formatPrice } from "@/data/products";
 
@@ -17,44 +18,45 @@ export function CheckoutForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<OrderResult | null>(null);
+  const [paypalReady, setPaypalReady] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const paypalRendered = useRef(false);
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitting(true);
-    setError("");
-    const form = new FormData(event.currentTarget);
-    const customer = Object.fromEntries(form.entries());
-
-    try {
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customer,
-          paymentMethod: "paypal",
-          items: items.map(({ productId, size, colour, quantity }) => ({
-            productId,
-            size,
-            colour,
-            quantity,
-          })),
-        }),
-      });
-      const data = (await response.json()) as OrderResult & { error?: string };
-      if (!response.ok)
-        throw new Error(data.error || "We could not create your order.");
-      setResult(data);
-      clearCart();
-    } catch (caught) {
-      setError(
-        caught instanceof Error
-          ? caught.message
-          : "We could not create your order.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    setError("Complete the payment using the PayPal button below.");
   }
+
+  useEffect(() => {
+    if (!paypalReady || paypalRendered.current || !window.paypal || !formRef.current || !items.length) return;
+    paypalRendered.current = true;
+    window.paypal.Buttons({
+      style: { layout: "vertical", shape: "rect", label: "paypal" },
+      createOrder: async () => {
+        const form = formRef.current;
+        if (!form || !form.reportValidity()) throw new Error("Please complete your contact and delivery details.");
+        setSubmitting(true);
+        setError("");
+        const values = new FormData(form);
+        const customer = Object.fromEntries(values.entries());
+        const response = await fetch("/api/paypal/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ customer, items: items.map(({ productId, size, colour, quantity }) => ({ productId, size, colour, quantity })) }) });
+        const data = await response.json() as { id?: string; error?: string };
+        if (!response.ok || !data.id) { setSubmitting(false); throw new Error(data.error || "PayPal could not start the payment."); }
+        return data.id;
+      },
+      onApprove: async (data) => {
+        const response = await fetch(`/api/paypal/orders/${encodeURIComponent(data.orderID)}/capture`, { method: "POST" });
+        const capture = await response.json() as OrderResult & { error?: string };
+        if (!response.ok) throw new Error(capture.error || "PayPal could not complete the payment.");
+        setResult(capture);
+        clearCart();
+        setSubmitting(false);
+      },
+      onCancel: () => { setSubmitting(false); setError("PayPal payment was cancelled. Your order has not been charged."); },
+      onError: (caught) => { console.error("PayPal checkout failed", caught); setSubmitting(false); setError(caught instanceof Error ? caught.message : "PayPal could not complete the payment. Please try again."); },
+    }).render("#paypal-button-container").catch(caught => { paypalRendered.current = false; setError(caught instanceof Error ? caught.message : "PayPal could not load."); });
+  }, [paypalReady, items, clearCart]);
 
   if (!hydrated)
     return (
@@ -94,12 +96,13 @@ export function CheckoutForm() {
 
   return (
     <main className="checkout-page">
+      {clientId && <Script src={`https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=GBP&intent=capture&components=buttons`} strategy="afterInteractive" onLoad={() => setPaypalReady(true)} onError={() => setError("PayPal could not load. Please refresh the page.")} />}
       <section className="checkout-heading">
         <p className="kicker">Secure checkout</p>
         <h1>Complete your order.</h1>
         <p>UK delivery details and PayPal payment.</p>
       </section>
-      <form className="checkout-layout" onSubmit={submit}>
+      <form ref={formRef} className="checkout-layout" onSubmit={submit}>
         <div className="checkout-fields">
           <fieldset>
             <legend>Contact</legend>
@@ -176,13 +179,7 @@ export function CheckoutForm() {
               {error}
             </p>
           )}
-          <button
-            className="button checkout-submit"
-            type="submit"
-            disabled={submitting}
-          >
-            {submitting ? "Placing order…" : "Place order"}
-          </button>
+          {!clientId ? <p className="checkout-error">PayPal is not configured.</p> : <div className={submitting ? "paypal-buttons is-busy" : "paypal-buttons"}><div id="paypal-button-container" /></div>}
         </div>
         <aside className="checkout-summary">
           <p className="kicker">Your order</p>
