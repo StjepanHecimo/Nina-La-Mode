@@ -32,7 +32,7 @@ export async function buildCheckoutOrder(body: { customer?: CustomerInput; items
     if (!product || !Number.isInteger(quantity) || quantity < 1 || quantity > 10 || !product.sizes.includes(size) || !product.colors.some(option => option.name === colour)) {
       throw new CheckoutValidationError("One of the selected products, colours or UK sizes is no longer available.");
     }
-    return { productId: product.id, name: product.name, image: product.image, size, colour, quantity, unitPriceCents: product.priceCents, lineTotalCents: product.priceCents * quantity };
+    return { productId: product.id, name: product.name, image: product.image, size, colour, quantity, unitPriceCents: product.priceCents, lineTotalCents: product.priceCents * quantity, preorder: product.availability === "coming_soon" };
   }));
   const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
   const shippingCents = 0;

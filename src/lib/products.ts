@@ -24,6 +24,7 @@ function mapProduct(id: string, data: FirebaseFirestore.DocumentData): Product {
     inseam: typeof data.inseam === "string" ? data.inseam : undefined,
     fit: typeof data.fit === "string" ? data.fit : undefined,
     isNew: data.isNew === true,
+    availability: data.availability === "coming_soon" ? "coming_soon" : "available",
   };
 }
 

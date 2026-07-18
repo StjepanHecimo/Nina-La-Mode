@@ -47,7 +47,7 @@ export async function createPaypalOrder(order: Awaited<ReturnType<typeof import(
         invoice_id: order.orderNumber,
         description: "Nini La Mode order",
         amount: { currency_code: "GBP", value: money(order.totalCents), breakdown: { item_total: { currency_code: "GBP", value: money(order.subtotalCents) }, shipping: { currency_code: "GBP", value: money(order.shippingCents) } } },
-        items: order.items.map(item => ({ name: item.name.slice(0, 127), sku: item.productId.slice(0, 127), description: `${item.colour} · ${item.size}`.slice(0, 127), quantity: String(item.quantity), unit_amount: { currency_code: "GBP", value: money(item.unitPriceCents) }, category: "PHYSICAL_GOODS" })),
+        items: order.items.map(item => ({ name: item.name.slice(0, 127), sku: item.productId.slice(0, 127), description: `${item.preorder ? "Pre-order · " : ""}${item.colour} · ${item.size}`.slice(0, 127), quantity: String(item.quantity), unit_amount: { currency_code: "GBP", value: money(item.unitPriceCents) }, category: "PHYSICAL_GOODS" })),
         shipping: { name: { full_name: `${order.customer.firstName} ${order.customer.lastName}` }, address: { address_line_1: order.customer.address1, ...(order.customer.address2 ? { address_line_2: order.customer.address2 } : {}), admin_area_2: order.customer.city, ...(order.customer.county ? { admin_area_1: order.customer.county } : {}), postal_code: order.customer.postcode, country_code: "GB" } },
       }],
       application_context: { brand_name: "Nini La Mode", locale: "en-GB", shipping_preference: "SET_PROVIDED_ADDRESS", user_action: "PAY_NOW" },

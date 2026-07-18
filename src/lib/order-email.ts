@@ -6,13 +6,13 @@ import { escapeHtml, isSmtpConfigured, mailShell, sendMail, shopEmail } from "@/
 type EmailOrder = {
   orderNumber: string;
   customer: { firstName: string; lastName: string; email: string; phone: string; address1: string; address2: string; city: string; county: string; postcode: string; country: string };
-  items: { name: string; size: string; colour: string; quantity: number; unitPriceCents: number; lineTotalCents: number }[];
+  items: { name: string; size: string; colour: string; quantity: number; unitPriceCents: number; lineTotalCents: number; preorder?: boolean }[];
   totalCents: number;
   payment?: { status?: string; paypalCaptureId?: string | null };
 };
 
 function rows(order: EmailOrder) {
-  return order.items.map((item) => `<tr><td style="padding:12px 0;border-bottom:1px solid #e5ddd3"><strong>${escapeHtml(item.name)}</strong><br><span style="color:#69707d">${escapeHtml(item.colour)} · ${escapeHtml(item.size)} · Qty ${item.quantity}</span></td><td style="padding:12px 0;border-bottom:1px solid #e5ddd3;text-align:right">${formatPrice(item.lineTotalCents)}</td></tr>`).join("");
+  return order.items.map((item) => `<tr><td style="padding:12px 0;border-bottom:1px solid #e5ddd3"><strong>${escapeHtml(item.name)}</strong>${item.preorder ? `<br><span style="color:#a56d71;font-size:11px;font-weight:bold">PRE-ORDER</span>` : ""}<br><span style="color:#69707d">${escapeHtml(item.colour)} · ${escapeHtml(item.size)} · Qty ${item.quantity}</span></td><td style="padding:12px 0;border-bottom:1px solid #e5ddd3;text-align:right">${formatPrice(item.lineTotalCents)}</td></tr>`).join("");
 }
 
 export async function sendOrderEmails(order: EmailOrder) {

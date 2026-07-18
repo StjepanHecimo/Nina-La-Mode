@@ -21,9 +21,9 @@ export function AdminProductList({ products, email }: { products: AdminProduct[]
     setMessage("");
     try {
       const response = await fetch(`/api/admin/products/${encodeURIComponent(product.id)}/newsletter`, { method: "POST" });
-      const data = await response.json() as { error?: string; campaignId?: number };
+      const data = await response.json() as { error?: string; campaignId?: number; subscribers?: number };
       if (!response.ok) throw new Error(data.error || "The newsletter could not be sent.");
-      setMessage(`Newsletter sent successfully${data.campaignId ? ` — campaign #${data.campaignId}` : ""}.`);
+      setMessage(data.subscribers === 0 ? "Product marked as available. There are currently no newsletter subscribers." : `Newsletter sent successfully${data.campaignId ? ` — campaign #${data.campaignId}` : ""}.`);
       router.refresh();
     } catch (caught) { setError(caught instanceof Error ? caught.message : "The newsletter could not be sent."); }
     finally { setSending(""); }
@@ -55,8 +55,8 @@ export function AdminProductList({ products, email }: { products: AdminProduct[]
     {message && <p className="admin-success" role="status">{message}</p>}
     {!products.length ? <div className="admin-empty"><p>No products yet.</p><Link className="button" href="/admin/products/new">Add first product</Link></div> : <div className="admin-product-list">{products.map(product => <article key={product.id}>
       <div className="admin-list-image"><Image src={product.image} alt={product.name} fill sizes="110px" /></div>
-      <div><span className={`admin-status ${product.active ? "published" : "draft"}`}>{product.active ? "Published" : "Draft"}</span><h2>{product.name}</h2><p>{product.category} · {formatPrice(product.priceCents)}</p><small>Newsletter: {product.newsletterStatus}</small>{product.campaignId && <small> · Campaign #{product.campaignId}</small>}</div>
-      <div className="admin-list-actions"><Link href={`/admin/products/${product.id}/edit`}>Edit</Link>{product.active && product.newsletterStatus !== "sent" && <button type="button" disabled={Boolean(sending)} onClick={() => sendNewsletter(product)}>{sending === product.id ? "Sending…" : "Send newsletter"}</button>}<button type="button" className="danger" disabled={deleting === product.id} onClick={() => remove(product)}>{deleting === product.id ? "Deleting…" : "Delete"}</button></div>
+      <div><span className={`admin-status ${!product.active ? "draft" : product.availability === "coming_soon" ? "coming-soon" : "published"}`}>{!product.active ? "Draft" : product.availability === "coming_soon" ? "Coming soon · Pre-order" : "Published"}</span><h2>{product.name}</h2><p>{product.category} · {formatPrice(product.priceCents)}</p><small>Newsletter: {product.newsletterStatus}</small>{product.campaignId && <small> · Campaign #{product.campaignId}</small>}</div>
+      <div className="admin-list-actions"><Link href={`/admin/products/${product.id}/edit`}>Edit</Link>{product.active && product.newsletterStatus !== "sent" && <button type="button" disabled={Boolean(sending)} onClick={() => sendNewsletter(product)}>{sending === product.id ? "Sending…" : product.availability === "coming_soon" ? "Mark available & send newsletter" : "Send newsletter"}</button>}<button type="button" className="danger" disabled={deleting === product.id} onClick={() => remove(product)}>{deleting === product.id ? "Deleting…" : "Delete"}</button></div>
     </article>)}</div>}
   </>;
 }

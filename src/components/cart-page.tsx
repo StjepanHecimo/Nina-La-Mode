@@ -20,7 +20,7 @@ export function CartPage() {
         const key = cartItemKey(item);
         return <article className="cart-item" key={key}>
           <Link className="cart-item-image" href={`/shop/${item.productId}`}><Image src={item.image} alt={item.name} fill sizes="140px" /></Link>
-          <div className="cart-item-copy"><p className="kicker">{item.colour} · {item.size}</p><Link href={`/shop/${item.productId}`}><h2>{item.name}</h2></Link><p>{formatPrice(item.priceCents)}</p><div className="quantity-control"><button type="button" onClick={() => updateQuantity(key, item.quantity - 1)} aria-label={`Decrease ${item.name} quantity`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => updateQuantity(key, item.quantity + 1)} aria-label={`Increase ${item.name} quantity`}>+</button></div><button className="remove-item" type="button" onClick={() => removeItem(key)}>Remove</button></div>
+          <div className="cart-item-copy"><p className="kicker">{item.preorder ? "Pre-order · " : ""}{item.colour} · {item.size}</p><Link href={`/shop/${item.productId}`}><h2>{item.name}</h2></Link><p>{formatPrice(item.priceCents)}</p><div className="quantity-control"><button type="button" onClick={() => updateQuantity(key, item.quantity - 1)} aria-label={`Decrease ${item.name} quantity`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => updateQuantity(key, item.quantity + 1)} aria-label={`Increase ${item.name} quantity`}>+</button></div><button className="remove-item" type="button" onClick={() => removeItem(key)}>Remove</button></div>
           <strong>{formatPrice(item.priceCents * item.quantity)}</strong>
         </article>;
       })}</section>

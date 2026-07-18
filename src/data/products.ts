@@ -13,6 +13,7 @@ export type Product = {
   inseam?: string;
   fit?: string;
   isNew?: boolean;
+  availability?: "available" | "coming_soon";
 };
 
 export const products: Product[] = [

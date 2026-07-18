@@ -15,6 +15,5 @@ export function parseProductInput(value: unknown): Product | null {
   const description = typeof input.description === "string" ? input.description.trim().slice(0, 2000) : "";
   const sizes = Array.isArray(input.sizes) ? input.sizes.filter((item): item is string => typeof item === "string").slice(0, 20) : [];
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) || !name || !["Dresses", "Blouses", "Trousers"].includes(String(category)) || !Number.isInteger(priceCents) || priceCents < 1 || !image || !images.length || !color || !colors.length || !material || description.length < 20 || !sizes.length) return null;
-  return { id, name, category: category as Product["category"], priceCents, image, images, color, colors, material, description, sizes, inseam: typeof input.inseam === "string" ? input.inseam.trim().slice(0, 60) : undefined, fit: typeof input.fit === "string" ? input.fit.trim().slice(0, 160) : undefined, isNew: input.isNew !== false };
+  return { id, name, category: category as Product["category"], priceCents, image, images, color, colors, material, description, sizes, inseam: typeof input.inseam === "string" ? input.inseam.trim().slice(0, 60) : undefined, fit: typeof input.fit === "string" ? input.fit.trim().slice(0, 160) : undefined, isNew: input.isNew !== false, availability: input.availability === "coming_soon" ? "coming_soon" : "available" };
 }
-

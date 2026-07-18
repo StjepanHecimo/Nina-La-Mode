@@ -9,7 +9,7 @@ function mapAdminProduct(id: string, data: FirebaseFirestore.DocumentData): Admi
   const notification = data.newsletterNotification ?? {};
   return {
     id, name: data.name, category: data.category, priceCents: data.priceCents, image: data.image, images: data.images ?? [data.image], color: data.color,
-    colors: data.colors ?? [], material: data.material, description: data.description, sizes: data.sizes ?? [], inseam: data.inseam, fit: data.fit, isNew: data.isNew,
+    colors: data.colors ?? [], material: data.material, description: data.description, sizes: data.sizes ?? [], inseam: data.inseam, fit: data.fit, isNew: data.isNew, availability: data.availability === "coming_soon" ? "coming_soon" : "available",
     active: data.active === true, order: Number(data.order ?? 0), newsletterStatus: String(notification.status ?? "none"), campaignId: typeof notification.campaignId === "number" ? notification.campaignId : undefined,
   };
 }
@@ -27,4 +27,3 @@ export async function getAdminProductById(id: string): Promise<AdminProduct | nu
   const snapshot = await db.collection("products").doc(id).get();
   return snapshot.exists ? mapAdminProduct(snapshot.id, snapshot.data()!) : null;
 }
-

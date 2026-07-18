@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getAdminSession } from "@/lib/admin-auth";
 import { sendNewProductCampaign, sendNewProductEmails, syncBrevoContact } from "@/lib/brevo-api";
 import { getAdminDb } from "@/lib/firebase-admin";
@@ -23,9 +24,19 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     if (data.newsletterNotification?.status === "sent") return NextResponse.json({ error: "The newsletter for this product has already been sent." }, { status: 409 });
     const product = parseProductInput({ id, ...data });
     if (!product) return NextResponse.json({ error: "The saved product data is incomplete." }, { status: 400 });
+    if (data.availability === "coming_soon") {
+      product.availability = "available";
+      await ref.set({ availability: "available", updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      revalidatePath("/");
+      revalidatePath("/shop");
+      revalidatePath(`/shop/${id}`);
+    }
 
     const subscribers = await db.collection("newsletterSubscribers").where("status", "==", "subscribed").get();
-    if (subscribers.empty) return NextResponse.json({ error: "There are currently no subscribed contacts." }, { status: 400 });
+    if (subscribers.empty) {
+      await ref.set({ newsletterNotification: { status: "no_subscribers", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
+      return NextResponse.json({ sent: false, available: true, subscribers: 0 });
+    }
     for (const document of subscribers.docs) {
       const email = document.data().email;
       if (typeof email !== "string" || document.data().brevoSynced === true) continue;

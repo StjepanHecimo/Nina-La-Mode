@@ -31,9 +31,9 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json() as Record<string, unknown>;
-    const action = body.action === "draft" ? "draft" : body.action === "publish" ? "publish" : null;
+    const action = body.action === "draft" ? "draft" : body.action === "coming_soon" ? "coming_soon" : body.action === "publish" ? "publish" : null;
     const inputProduct = parseProductInput(body);
-    if (!action) return NextResponse.json({ error: "Choose Save draft or Publish." }, { status: 400 });
+    if (!action) return NextResponse.json({ error: "Choose Save draft, Coming soon or Publish." }, { status: 400 });
     if (!inputProduct) return NextResponse.json({ error: "Invalid product data." }, { status: 400 });
     const { id, ...productData } = inputProduct;
     const productRef = db.collection("products").doc(id);
@@ -44,13 +44,21 @@ export async function POST(request: Request) {
     const currentProducts = !existing.exists ? await db.collection("products").get() : null;
     const baseData = { ...productData, updatedAt: FieldValue.serverTimestamp(), ...(!existing.exists ? { order: currentProducts!.size, createdAt: FieldValue.serverTimestamp() } : {}) };
     if (action === "draft") {
-      await productRef.set({ ...baseData, active: false, newsletterNotification: { status: "draft", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
+      await productRef.set({ ...baseData, active: false, availability: "available", newsletterNotification: { status: "draft", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
       revalidatePath("/");
       revalidatePath("/shop");
       return NextResponse.json({ productId: id, saved: "draft" }, { status: existing.exists ? 200 : 201 });
     }
 
-    await productRef.set({ ...baseData, active: true, newsletterNotification: { status: "pending", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
+    if (action === "coming_soon") {
+      await productRef.set({ ...baseData, active: true, availability: "coming_soon", newsletterNotification: { status: "coming_soon", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
+      revalidatePath("/");
+      revalidatePath("/shop");
+      revalidatePath(`/shop/${id}`);
+      return NextResponse.json({ productId: id, saved: "coming_soon", newsletter: "not_sent" }, { status: existing.exists ? 200 : 201 });
+    }
+
+    await productRef.set({ ...baseData, active: true, availability: "available", newsletterNotification: { status: "pending", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
     revalidatePath("/");
     revalidatePath("/shop");
     revalidatePath(`/shop/${id}`);

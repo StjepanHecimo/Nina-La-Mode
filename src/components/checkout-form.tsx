@@ -179,7 +179,7 @@ export function CheckoutForm() {
               <p>
                 <strong>{item.name}</strong>
                 <small>
-                  {item.colour} · {item.size}
+                  {item.preorder ? "Pre-order · " : ""}{item.colour} · {item.size}
                 </small>
               </p>
               <strong>{formatPrice(item.priceCents * item.quantity)}</strong>

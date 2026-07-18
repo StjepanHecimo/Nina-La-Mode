@@ -6,8 +6,8 @@ export type CartItem = {
   colour: string;
   quantity: number;
   priceCents: number;
+  preorder?: boolean;
 };
 
 export const cartItemKey = (item: Pick<CartItem, "productId" | "size" | "colour">) =>
   `${item.productId}:${item.size}:${item.colour}`;
-
