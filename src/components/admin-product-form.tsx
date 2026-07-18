@@ -59,7 +59,7 @@ export function AdminProductForm({ email, initialProduct }: { email: string; ini
       };
       const endpoint = submitAction === "save" ? `/api/admin/products/${encodeURIComponent(product.id)}` : "/api/products";
       const response = await fetch(endpoint, { method: submitAction === "save" ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(submitAction === "save" ? product : { ...product, action: submitAction }) });
-      const data = await response.json() as { error?: string; newsletter?: string };
+      const data = await response.json() as { error?: string; newsletter?: string; warning?: string };
       if (!response.ok) throw new Error(data.error || "The product could not be saved.");
       setExistingImages(images);
       setFiles([]);
@@ -67,6 +67,7 @@ export function AdminProductForm({ email, initialProduct }: { email: string; ini
       else if (submitAction === "draft") setMessage("Draft saved. It is not visible in the shop and no newsletter was sent.");
       else if (data.newsletter === "sent") setMessage("Product published and the new-arrival newsletter was sent.");
       else if (data.newsletter === "no_subscribers") setMessage("Product published. There are currently no newsletter subscribers.");
+      else if (data.newsletter === "failed") setError(data.warning || "Product published, but the newsletter was not sent. Check the Brevo configuration.");
       else setMessage("Product published. Newsletter delivery is waiting for the Brevo API configuration.");
       router.refresh();
     } catch (caught) { setError(caught instanceof Error ? caught.message : "The product could not be saved."); }

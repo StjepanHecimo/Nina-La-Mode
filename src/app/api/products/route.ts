@@ -60,28 +60,39 @@ export async function POST(request: Request) {
       return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "waiting_for_brevo" }, { status: 202 });
     }
 
-    const subscribers = await db.collection("newsletterSubscribers").where("status", "==", "subscribed").get();
-    const unsynced = subscribers.docs.filter((document) => document.data().brevoSynced !== true);
-    for (let index = 0; index < unsynced.length; index += 10) {
-      await Promise.all(unsynced.slice(index, index + 10).map(async (document) => {
-        const email = document.data().email;
-        if (typeof email !== "string") return;
-        await syncBrevoContact(email);
-        await document.ref.set({ brevoSynced: true, brevoSyncedAt: FieldValue.serverTimestamp() }, { merge: true });
-      }));
-    }
+    try {
+      const subscribers = await db.collection("newsletterSubscribers").where("status", "==", "subscribed").get();
+      const unsynced = subscribers.docs.filter((document) => document.data().brevoSynced !== true);
+      for (let index = 0; index < unsynced.length; index += 10) {
+        await Promise.all(unsynced.slice(index, index + 10).map(async (document) => {
+          const email = document.data().email;
+          if (typeof email !== "string") return;
+          await syncBrevoContact(email);
+          await document.ref.set({ brevoSynced: true, brevoSyncedAt: FieldValue.serverTimestamp() }, { merge: true });
+        }));
+      }
 
-    if (subscribers.empty) {
-      await productRef.set({ newsletterNotification: { status: "no_subscribers", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
-      return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "no_subscribers" }, { status: 201 });
-    }
+      if (subscribers.empty) {
+        await productRef.set({ newsletterNotification: { status: "no_subscribers", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
+        return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "no_subscribers" }, { status: 201 });
+      }
 
-    const campaignId = await sendNewProductCampaign(inputProduct);
-    await productRef.set({ newsletterNotification: { status: "sent", campaignId, sentAt: FieldValue.serverTimestamp() }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-    revalidatePath("/");
-    revalidatePath("/shop");
-    revalidatePath(`/shop/${id}`);
-    return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "sent", campaignId, subscribers: subscribers.size }, { status: 201 });
+      const campaignId = await sendNewProductCampaign(inputProduct);
+      await productRef.set({ newsletterNotification: { status: "sent", campaignId, sentAt: FieldValue.serverTimestamp() }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      revalidatePath("/");
+      revalidatePath("/shop");
+      revalidatePath(`/shop/${id}`);
+      return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "sent", campaignId, subscribers: subscribers.size }, { status: 201 });
+    } catch (newsletterError) {
+      console.error("Product published but Brevo newsletter failed", newsletterError);
+      await productRef.set({ newsletterNotification: { status: "failed", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
+      return NextResponse.json({
+        productId: id,
+        created: !existing.exists,
+        newsletter: "failed",
+        warning: "Product published successfully, but the newsletter was not sent. Check the Brevo API key, list ID and verified sender.",
+      }, { status: 202 });
+    }
   } catch (error) {
     console.error("Product creation or newsletter failed", error);
     return NextResponse.json({ error: "The product or newsletter could not be completed." }, { status: 500 });

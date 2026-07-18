@@ -271,7 +271,7 @@ em { color:#a56d71; font-weight:400; }
 .admin-status.draft { background:#e8e1d8; color:#745f4d; }
 .admin-list-actions { display:flex; align-items:center; gap:12px; }
 .admin-list-actions a,.admin-list-actions button { padding:10px 14px; border:1px solid var(--navy); background:transparent; color:var(--navy); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
-.admin-list-actions button { border-color:#a5585e; color:#913d44; }
+.admin-list-actions button.danger { border-color:#a5585e; color:#913d44; }
 .admin-list-actions button:disabled { opacity:.5; }
 .admin-empty { padding:60px; background:var(--white); text-align:center; }
 .admin-empty .button { margin:25px auto 0; }
