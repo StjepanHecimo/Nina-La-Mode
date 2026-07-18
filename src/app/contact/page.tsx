@@ -3,9 +3,9 @@ import { ContactForm } from "@/components/contact-form";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Contact Nina La Mode for product, sizing, delivery or order support.",
+  description: "Contact Nini La Mode for product, sizing, delivery or order support.",
   alternates: { canonical: "/contact" },
-  openGraph: { title: "Contact Nina La Mode", description: "We are here to help with sizing, products and orders.", url: "/contact" },
+  openGraph: { title: "Contact Nini La Mode", description: "We are here to help with sizing, products and orders.", url: "/contact" },
 };
 
 export default function ContactPage() {

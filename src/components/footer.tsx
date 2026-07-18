@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-brand">
         <Link className="logo" href="/">
-          NINA <span>LA MODE</span>
+          NINI <span>LA MODE</span>
         </Link>
         <p>
           Clothing made to fit your day and stay in your wardrobe for years.
@@ -36,7 +36,7 @@ export function Footer() {
         </div>
       </div>
       <p className="copyright">
-        © {new Date().getFullYear()} Nina La Mode. All rights reserved.
+        © {new Date().getFullYear()} Nini La Mode. All rights reserved.
       </p>
     </footer>
   );

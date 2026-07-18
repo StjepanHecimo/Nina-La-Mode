@@ -4,7 +4,7 @@ import { getProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Shop Tall Women's Trousers",
-  description: "Shop Nina La Mode high-waisted, wide-leg cotton trousers for tall women in UK sizes 12–20 with an 88 cm inseam.",
+  description: "Shop Nini La Mode high-waisted, wide-leg cotton trousers for tall women in UK sizes 12–20 with an 88 cm inseam.",
   alternates: { canonical: "/shop" },
   openGraph: { title: "Shop Tall Women's Trousers", description: "Full-length trousers designed for tall women.", url: "/shop", images: ["/images/classic-tall-trousers.png"] },
 };

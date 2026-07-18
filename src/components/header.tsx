@@ -17,7 +17,7 @@ export function Header() {
 
   return (
     <header className="site-header">
-      <Link className="logo" href="/" aria-label="Nina La Mode home">NINA <span>LA MODE</span></Link>
+      <Link className="logo" href="/" aria-label="Nini La Mode home">NINI <span>LA MODE</span></Link>
       <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="Open navigation"><MenuIcon /></button>
       <nav className={open ? "main-nav is-open" : "main-nav"} aria-label="Main navigation">
         {links.map(([href, label]) => <Link key={href} href={href} className={pathname === href ? "active" : ""} onClick={() => setOpen(false)}>{label}</Link>)}

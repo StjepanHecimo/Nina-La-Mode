@@ -2,7 +2,7 @@
 
 Shop
 
-Nina La mode je web stranica za prodaju odjeće. E sada, ovako nekako ćemo mi to sve postavit jednostavno, brzo i transparentno.
+Nini La mode je web stranica za prodaju odjeće. E sada, ovako nekako ćemo mi to sve postavit jednostavno, brzo i transparentno.
 
 Prvo ćemo koristiti next.js vite webpack i to je to, serverside zbog boljeg SEO i ostalih stvari. Postavit ćeš prvi setup, moze i typescript. Za deployment koristimo vercel, i ne koristimo docker, domenu već imamo. Za bazu koristimo firebase i poslozi ENV za vercel i sa praznim varijablama ja ću ih ispuniti.
 

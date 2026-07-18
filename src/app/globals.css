@@ -199,7 +199,7 @@ em { color:#a56d71; font-weight:400; }
 .payment-option input { accent-color:var(--navy); }
 .payment-option span { display:flex; flex:1; flex-direction:column; gap:5px; }
 .payment-option small { color:#777b84; }
-.payment-option b { font-size:18px; letter-spacing:-.03em; text-transform:none; }
+.payment-option .paypal-logo { width:46px; height:46px; object-fit:contain; }
 .test-payment-note { margin:18px 0 0; padding:15px; background:var(--cream); color:#6f6260; font-size:12px; line-height:1.6; }
 .checkout-submit { width:100%; }
 .checkout-error { padding:15px; background:#f5d8d8; color:#7c2f35; }
@@ -270,7 +270,7 @@ em { color:#a56d71; font-weight:400; }
   .cart-item>strong { grid-column:2; }
   .checkout-fields fieldset { padding:22px 18px; }
   .checkout-fields .field-row { grid-template-columns:1fr; gap:0; }
-  .payment-option b { display:none; }
+  .payment-option .paypal-logo { width:38px; height:38px; }
   .story { margin:80px auto; grid-template-columns:1fr; gap:30px; }
   .numbers { grid-template-columns:1fr; }
   .numbers div { border-right:0; border-bottom:1px solid var(--line); }

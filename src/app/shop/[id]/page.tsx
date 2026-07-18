@@ -42,12 +42,12 @@ export default async function ProductPage({ params }: Props) {
     image: product.images.map((image) => `https://www.ninilamode.com${image}`),
     description: product.description,
     sku: product.id,
-    brand: { "@type": "Brand", name: "Nina La Mode" },
+    brand: { "@type": "Brand", name: "Nini La Mode" },
     color: product.color,
     material: product.material,
     size: product.sizes,
     audience: { "@type": "PeopleAudience", suggestedGender: "female", suggestedMinAge: 18 },
-    offers: { "@type": "Offer", url: productUrl, priceCurrency: "GBP", price: (product.priceCents / 100).toFixed(2), availability: "https://schema.org/InStock", itemCondition: "https://schema.org/NewCondition", seller: { "@type": "Organization", name: "Nina La Mode" } },
+    offers: { "@type": "Offer", url: productUrl, priceCurrency: "GBP", price: (product.priceCents / 100).toFixed(2), availability: "https://schema.org/InStock", itemCondition: "https://schema.org/NewCondition", seller: { "@type": "Organization", name: "Nini La Mode" } },
   };
 
   return <main className="product-page">
@@ -59,6 +59,6 @@ export default async function ProductPage({ params }: Props) {
         <ProductPurchase product={product} />
       </div>
     </section>
-    {fallback.length > 0 ? <section className="continue-shopping"><div className="section-heading"><div><p className="kicker">Keep exploring</p><h2>You may also <em>love.</em></h2></div><Link className="text-link" href="/shop">View the collection <ArrowIcon /></Link></div><div className="product-grid">{(related.length >= 3 ? related : fallback).map(item => <ProductCard key={item.id} product={item}/>)}</div></section> : <section className="product-promise"><p className="kicker light">The Nina La Mode signature</p><h2>Cut for height.<br/><em>Made for every day.</em></h2><p>From the morning commute to evening plans, Classic Tall trousers follow your rhythm without compromising comfort or elegance.</p><Link className="text-link light" href="/shop">Back to shop <ArrowIcon /></Link></section>}
+    {fallback.length > 0 ? <section className="continue-shopping"><div className="section-heading"><div><p className="kicker">Keep exploring</p><h2>You may also <em>love.</em></h2></div><Link className="text-link" href="/shop">View the collection <ArrowIcon /></Link></div><div className="product-grid">{(related.length >= 3 ? related : fallback).map(item => <ProductCard key={item.id} product={item}/>)}</div></section> : <section className="product-promise"><p className="kicker light">The Nini La Mode signature</p><h2>Cut for height.<br/><em>Made for every day.</em></h2><p>From the morning commute to evening plans, Classic Tall trousers follow your rhythm without compromising comfort or elegance.</p><Link className="text-link light" href="/shop">Back to shop <ArrowIcon /></Link></section>}
   </main>;
 }

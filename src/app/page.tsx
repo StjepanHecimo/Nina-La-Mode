@@ -12,8 +12,8 @@ export default async function Home() {
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "@id": "https://www.ninilamode.com/#organization", name: "Nina La Mode", url: "https://www.ninilamode.com", logo: "https://www.ninilamode.com/images/classic-tall-trousers.png", email: "info@ninilamode.com" },
-      { "@type": "WebSite", "@id": "https://www.ninilamode.com/#website", url: "https://www.ninilamode.com", name: "Nina La Mode", inLanguage: "en-GB", publisher: { "@id": "https://www.ninilamode.com/#organization" } },
+      { "@type": "Organization", "@id": "https://www.ninilamode.com/#organization", name: "Nini La Mode", url: "https://www.ninilamode.com", logo: "https://www.ninilamode.com/images/classic-tall-trousers.png", email: "info@ninilamode.com" },
+      { "@type": "WebSite", "@id": "https://www.ninilamode.com/#website", url: "https://www.ninilamode.com", name: "Nini La Mode", inLanguage: "en-GB", publisher: { "@id": "https://www.ninilamode.com/#organization" } },
     ],
   };
   return <main><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
