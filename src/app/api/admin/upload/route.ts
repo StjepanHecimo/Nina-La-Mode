@@ -33,7 +33,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ url, path });
   } catch (error) {
     console.error("Admin image upload failed", error);
-    return NextResponse.json({ error: "The image could not be uploaded." }, { status: 500 });
+    const code = typeof error === "object" && error && "code" in error ? String(error.code) : "";
+    const message = error instanceof Error ? error.message : "";
+    if (code === "404" || message.includes("bucket does not exist")) {
+      return NextResponse.json({ error: "Firebase Storage is not active for this project. Open Firebase Console → Storage, select Get started, then try again." }, { status: 503 });
+    }
+    if (code === "403" || message.includes("permission")) {
+      return NextResponse.json({ error: "Firebase rejected the upload. Check that the Admin service account can access Firebase Storage." }, { status: 503 });
+    }
+    return NextResponse.json({ error: "The image could not be uploaded. Please try again." }, { status: 500 });
   }
 }
-

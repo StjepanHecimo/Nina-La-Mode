@@ -223,6 +223,8 @@ em { color:#a56d71; font-weight:400; }
 .admin-login-form { margin-top:35px; }
 .admin-login-form label,.admin-product-form label { display:block; margin-bottom:23px; color:#5f6570; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
 .admin-login-form input,.admin-product-form input:not([type="checkbox"]):not([type="color"]):not([type="file"]),.admin-product-form select,.admin-product-form textarea { width:100%; margin-top:9px; padding:13px 0; border:0; border-bottom:1px solid #c7c0b6; outline:0; background:transparent; font-size:15px; text-transform:none; letter-spacing:0; }
+.admin-product-form input:user-invalid:not([type="checkbox"]):not([type="color"]):not([type="file"]),.admin-product-form select:user-invalid,.admin-product-form textarea:user-invalid { border-bottom:2px solid #a83f48; }
+.admin-product-form label:has(> input:user-invalid:not([type="color"]):not([type="file"]))::after,.admin-product-form label:has(> select:user-invalid)::after,.admin-product-form label:has(> textarea:user-invalid)::after { content:"Please complete this field."; display:block; margin-top:6px; color:#a83f48; font-size:10px; font-weight:600; letter-spacing:0; text-transform:none; }
 .admin-login-form .button { width:100%; }
 .admin-security-note { margin:18px 0 0; color:#777b84; font-size:10px; line-height:1.5; text-align:center; }
 .admin-heading { max-width:850px; margin-bottom:55px; }
@@ -237,6 +239,8 @@ em { color:#a56d71; font-weight:400; }
 .admin-product-form section>p { color:#69707d; line-height:1.65; }
 .admin-product-form input[type="color"] { width:100%; height:45px; margin-top:9px; padding:2px; border:1px solid var(--line); background:var(--white); }
 .admin-sizes { margin:20px 0 0; padding:20px; border:1px solid var(--line); }
+.admin-sizes.invalid,.admin-images-section.invalid { border-bottom:2px solid #a83f48; }
+.admin-field-error { margin:7px 0 15px!important; color:#a83f48!important; font-size:11px; font-weight:600; }
 .admin-sizes legend { padding:0 8px; color:#8a6b6c; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
 .admin-sizes label { margin:0 18px 12px 0; display:inline-flex; align-items:center; gap:7px; }
 .admin-file-picker { width:max-content; padding:14px 18px; border:1px solid var(--navy); color:var(--navy)!important; cursor:pointer; }
