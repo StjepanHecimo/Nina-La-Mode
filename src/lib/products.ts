@@ -5,8 +5,26 @@ import { products as fallbackProducts, type Product } from "@/data/products";
 
 const collectionName = "products";
 
-function mapProduct(id: string, data: Omit<Product, "id">): Product {
-  return { id, ...data };
+function mapProduct(id: string, data: FirebaseFirestore.DocumentData): Product {
+  return {
+    id,
+    name: String(data.name ?? ""),
+    category: data.category as Product["category"],
+    priceCents: Number(data.priceCents ?? 0),
+    image: String(data.image ?? ""),
+    images: Array.isArray(data.images) ? data.images.map(String) : [String(data.image ?? "")],
+    color: String(data.color ?? ""),
+    colors: Array.isArray(data.colors) ? data.colors.map((colour: unknown) => {
+      const value = colour && typeof colour === "object" ? colour as Record<string, unknown> : {};
+      return { name: String(value.name ?? ""), hex: String(value.hex ?? "") };
+    }) : [],
+    material: String(data.material ?? ""),
+    description: String(data.description ?? ""),
+    sizes: Array.isArray(data.sizes) ? data.sizes.map(String) : [],
+    inseam: typeof data.inseam === "string" ? data.inseam : undefined,
+    fit: typeof data.fit === "string" ? data.fit : undefined,
+    isNew: data.isNew === true,
+  };
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -19,9 +37,7 @@ export async function getProducts(): Promise<Product[]> {
     .get();
 
   return snapshot.docs.sort((a, b) => (a.data().order ?? 0) - (b.data().order ?? 0)).map((doc) => {
-    const { active: _active, order: _order, createdAt: _createdAt, updatedAt: _updatedAt, ...product } = doc.data();
-    void _active; void _order; void _createdAt; void _updatedAt;
-    return mapProduct(doc.id, product as Omit<Product, "id">);
+    return mapProduct(doc.id, doc.data());
   });
 }
 
@@ -34,7 +50,5 @@ export async function getProductById(id: string): Promise<Product | null> {
   const snapshot = await db.collection(collectionName).doc(id).get();
   if (!snapshot.exists || snapshot.data()?.active !== true) return null;
 
-  const { active: _active, order: _order, createdAt: _createdAt, updatedAt: _updatedAt, ...product } = snapshot.data()!;
-  void _active; void _order; void _createdAt; void _updatedAt;
-  return mapProduct(snapshot.id, product as Omit<Product, "id">);
+  return mapProduct(snapshot.id, snapshot.data()!);
 }
