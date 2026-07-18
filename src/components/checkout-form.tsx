@@ -153,33 +153,17 @@ export function CheckoutForm() {
           </fieldset>
           <fieldset>
             <legend>Payment</legend>
-            <label className="payment-option">
-              <input
-                name="paymentMethodDisplay"
-                type="radio"
-                value="paypal"
-                defaultChecked
-                required
-              />
-              <span>
-                <strong>PayPal</strong>
-                <small>Pay securely with your PayPal account.</small>
-              </span>
-              <Image
-                className="paypal-logo"
-                src="/images/paypal.png"
-                alt="PayPal"
-                width={46}
-                height={46}
-              />
-            </label>
+            <div className="paypal-payment-panel">
+              <p>Choose PayPal or an available debit or credit card option below.</p>
+              {!clientId ? <p className="checkout-error">PayPal is not configured.</p> : <div className={submitting ? "paypal-buttons is-busy" : "paypal-buttons"}><div id="paypal-button-container" /></div>}
+              <small>Payments are securely processed by PayPal. Nini La Mode never stores your card details.</small>
+            </div>
           </fieldset>
           {error && (
             <p className="checkout-error" role="alert">
               {error}
             </p>
           )}
-          {!clientId ? <p className="checkout-error">PayPal is not configured.</p> : <div className={submitting ? "paypal-buttons is-busy" : "paypal-buttons"}><div id="paypal-button-container" /></div>}
         </div>
         <aside className="checkout-summary">
           <p className="kicker">Your order</p>

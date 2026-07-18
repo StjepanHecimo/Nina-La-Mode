@@ -215,6 +215,9 @@ em { color:#a56d71; font-weight:400; }
 .checkout-submit { width:100%; }
 .paypal-buttons { min-height:48px; margin-top:8px; transition:opacity .2s; }
 .paypal-buttons.is-busy { opacity:.65; pointer-events:none; }
+.paypal-payment-panel { padding:5px 0 2px; }
+.paypal-payment-panel>p { margin:0 0 18px; color:#69707d; font-size:13px; line-height:1.6; }
+.paypal-payment-panel>small { display:block; margin-top:12px; color:#777b84; font-size:10px; line-height:1.5; }
 .checkout-error { padding:15px; background:#f5d8d8; color:#7c2f35; }
 .checkout-summary-item { display:grid; grid-template-columns:70px 1fr auto; align-items:center; gap:14px; padding:16px 0; border-bottom:1px solid var(--line); }
 .checkout-summary-item>div { height:90px; position:relative; background:#ead8ca; }
