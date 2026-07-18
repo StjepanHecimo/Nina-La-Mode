@@ -1,7 +1,8 @@
 import "server-only";
 
 import type { Product } from "@/data/products";
-import { escapeHtml } from "@/lib/mailer";
+import { escapeHtml, mailShell, sendMail, shopEmail } from "@/lib/mailer";
+import { createUnsubscribeToken } from "@/lib/newsletter-token";
 
 const API_URL = "https://api.brevo.com/v3";
 
@@ -86,4 +87,23 @@ export async function sendNewProductCampaign(product: Product) {
   });
   await brevoRequest(`/emailCampaigns/${campaign.id}/sendNow`, { method: "POST" });
   return campaign.id;
+}
+
+export async function sendNewProductEmails(product: Product, emails: string[]) {
+  const siteUrl = "https://www.ninilamode.com";
+  const productUrl = `${siteUrl}/shop/${encodeURIComponent(product.id)}`;
+  const imageUrl = product.image.startsWith("http") ? product.image : `${siteUrl}${product.image}`;
+  let sent = 0;
+  for (const email of emails) {
+    const unsubscribeUrl = `${siteUrl}/unsubscribe?token=${encodeURIComponent(createUnsubscribeToken(email))}`;
+    const delivered = await sendMail({
+      to: email,
+      replyTo: shopEmail(),
+      subject: `New at Nini La Mode: ${product.name}`,
+      html: mailShell(`<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" style="display:block;width:100%;max-height:680px;object-fit:cover"><p style="margin:30px 0 10px;color:#a56d71;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase">New arrival</p><h1 style="margin:0;font-family:Georgia,serif;font-size:42px;font-weight:normal">${escapeHtml(product.name)}</h1><p style="line-height:1.8;color:#59606d">${escapeHtml(product.description)}</p><p style="margin:28px 0"><a href="${escapeHtml(productUrl)}" style="display:inline-block;padding:17px 25px;background:#1c2230;color:#f2e8dc;text-decoration:none;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase">Discover the new piece</a></p><p style="font-size:11px;color:#777b84">No longer want these emails? <a href="${escapeHtml(unsubscribeUrl)}" style="color:#777b84;text-decoration:underline">Unsubscribe</a>.</p>`, "You received this because you subscribed at ninilamode.com."),
+    });
+    if (delivered) sent += 1;
+  }
+  if (sent !== emails.length) throw new Error("SMTP_PRODUCT_EMAIL_FAILED");
+  return sent;
 }

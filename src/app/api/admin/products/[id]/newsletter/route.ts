@@ -1,7 +1,7 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/admin-auth";
-import { sendNewProductCampaign, syncBrevoContact } from "@/lib/brevo-api";
+import { sendNewProductCampaign, sendNewProductEmails, syncBrevoContact } from "@/lib/brevo-api";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { parseProductInput } from "@/lib/product-input";
 
@@ -33,9 +33,17 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
       await document.ref.set({ brevoSynced: true, brevoSyncedAt: FieldValue.serverTimestamp() }, { merge: true });
     }
 
-    const campaignId = await sendNewProductCampaign(product);
-    await ref.set({ newsletterNotification: { status: "sent", campaignId, sentAt: FieldValue.serverTimestamp() }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-    return NextResponse.json({ sent: true, campaignId, subscribers: subscribers.size });
+    const emails = subscribers.docs.map(document => document.data().email).filter((email): email is string => typeof email === "string");
+    try {
+      const campaignId = await sendNewProductCampaign(product);
+      await ref.set({ newsletterNotification: { status: "sent", delivery: "campaign", campaignId, sentAt: FieldValue.serverTimestamp() }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      return NextResponse.json({ sent: true, campaignId, subscribers: subscribers.size });
+    } catch (campaignError) {
+      console.error("Brevo campaign failed; using SMTP fallback", campaignError);
+      const sent = await sendNewProductEmails(product, emails);
+      await ref.set({ newsletterNotification: { status: "sent", delivery: "smtp", sent, sentAt: FieldValue.serverTimestamp() }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      return NextResponse.json({ sent: true, delivery: "smtp", subscribers: sent });
+    }
   } catch (error) {
     console.error("Newsletter retry failed", error);
     await ref.set({ newsletterNotification: { status: "failed", updatedAt: FieldValue.serverTimestamp() } }, { merge: true }).catch(() => undefined);

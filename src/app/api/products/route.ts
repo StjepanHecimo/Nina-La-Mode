@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getProducts } from "@/lib/products";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { getAdminSession } from "@/lib/admin-auth";
-import { isBrevoApiConfigured, sendNewProductCampaign, syncBrevoContact } from "@/lib/brevo-api";
+import { isBrevoApiConfigured, sendNewProductCampaign, sendNewProductEmails, syncBrevoContact } from "@/lib/brevo-api";
 import { parseProductInput } from "@/lib/product-input";
 
 export const runtime = "nodejs";
@@ -77,12 +77,21 @@ export async function POST(request: Request) {
         return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "no_subscribers" }, { status: 201 });
       }
 
-      const campaignId = await sendNewProductCampaign(inputProduct);
-      await productRef.set({ newsletterNotification: { status: "sent", campaignId, sentAt: FieldValue.serverTimestamp() }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      const emails = subscribers.docs.map(document => document.data().email).filter((email): email is string => typeof email === "string");
+      let campaignId: number | undefined;
+      let delivery = "campaign";
+      try {
+        campaignId = await sendNewProductCampaign(inputProduct);
+      } catch (campaignError) {
+        console.error("Brevo campaign failed; using SMTP fallback", campaignError);
+        await sendNewProductEmails(inputProduct, emails);
+        delivery = "smtp";
+      }
+      await productRef.set({ newsletterNotification: { status: "sent", delivery, ...(campaignId ? { campaignId } : {}), sentAt: FieldValue.serverTimestamp() }, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
       revalidatePath("/");
       revalidatePath("/shop");
       revalidatePath(`/shop/${id}`);
-      return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "sent", campaignId, subscribers: subscribers.size }, { status: 201 });
+      return NextResponse.json({ productId: id, created: !existing.exists, newsletter: "sent", delivery, campaignId, subscribers: subscribers.size }, { status: 201 });
     } catch (newsletterError) {
       console.error("Product published but Brevo newsletter failed", newsletterError);
       await productRef.set({ newsletterNotification: { status: "failed", updatedAt: FieldValue.serverTimestamp() } }, { merge: true });
