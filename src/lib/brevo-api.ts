@@ -93,6 +93,10 @@ export async function sendNewProductEmails(product: Product, emails: string[]) {
   const siteUrl = "https://www.ninilamode.com";
   const productUrl = `${siteUrl}/shop/${encodeURIComponent(product.id)}`;
   const imageUrl = product.image.startsWith("http") ? product.image : `${siteUrl}${product.image}`;
+  const imageResponse = await fetch(imageUrl, { cache: "no-store" }).catch(() => null);
+  const inlineImage = imageResponse?.ok ? Buffer.from(await imageResponse.arrayBuffer()) : null;
+  const imageCid = `product-${product.id}@ninilamode.com`;
+  const imageSource = inlineImage ? `cid:${imageCid}` : imageUrl;
   let sent = 0;
   for (const email of emails) {
     const unsubscribeUrl = `${siteUrl}/unsubscribe?token=${encodeURIComponent(createUnsubscribeToken(email))}`;
@@ -100,7 +104,8 @@ export async function sendNewProductEmails(product: Product, emails: string[]) {
       to: email,
       replyTo: shopEmail(),
       subject: `New at Nini La Mode: ${product.name}`,
-      html: mailShell(`<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" style="display:block;width:100%;max-height:680px;object-fit:cover"><p style="margin:30px 0 10px;color:#a56d71;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase">New arrival</p><h1 style="margin:0;font-family:Georgia,serif;font-size:42px;font-weight:normal">${escapeHtml(product.name)}</h1><p style="line-height:1.8;color:#59606d">${escapeHtml(product.description)}</p><p style="margin:28px 0"><a href="${escapeHtml(productUrl)}" style="display:inline-block;padding:17px 25px;background:#1c2230;color:#f2e8dc;text-decoration:none;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase">Discover the new piece</a></p><p style="font-size:11px;color:#777b84">No longer want these emails? <a href="${escapeHtml(unsubscribeUrl)}" style="color:#777b84;text-decoration:underline">Unsubscribe</a>.</p>`, "You received this because you subscribed at ninilamode.com."),
+      html: mailShell(`<img src="${escapeHtml(imageSource)}" alt="${escapeHtml(product.name)}" width="568" style="display:block;width:100%;height:auto;max-height:680px;object-fit:cover"><p style="margin:30px 0 10px;color:#a56d71;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase">New arrival</p><h1 style="margin:0;font-family:Georgia,serif;font-size:42px;font-weight:normal">${escapeHtml(product.name)}</h1><p style="line-height:1.8;color:#59606d">${escapeHtml(product.description)}</p><p style="margin:28px 0"><a href="${escapeHtml(productUrl)}" style="display:inline-block;padding:17px 25px;background:#1c2230;color:#f2e8dc;text-decoration:none;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase">Discover the new piece</a></p><p style="font-size:11px;color:#777b84">No longer want these emails? <a href="${escapeHtml(unsubscribeUrl)}" style="color:#777b84;text-decoration:underline">Unsubscribe</a>.</p>`, "You received this because you subscribed at ninilamode.com."),
+      ...(inlineImage ? { attachments: [{ filename: `${product.id}.jpg`, content: inlineImage, contentType: imageResponse?.headers.get("content-type") || "image/jpeg", cid: imageCid, contentDisposition: "inline" }] } : {}),
     });
     if (delivered) sent += 1;
   }
