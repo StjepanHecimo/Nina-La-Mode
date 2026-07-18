@@ -10,4 +10,3 @@ export default async function NewProductPage() {
   if (!session) redirect("/admin/login");
   return <main className="admin-page"><section className="admin-heading"><p className="kicker">Product administration</p><h1>Add a new product.</h1><p>Save privately as a draft or publish it to the shop and notify subscribers.</p></section><AdminProductForm email={session.email} /></main>;
 }
-
