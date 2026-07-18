@@ -27,12 +27,12 @@ export function Footer() {
       <div>
         <p className="footer-title">Follow us</p>
         <div className="socials">
-          <a href="#" aria-label="Instagram">
+          <a href="https://www.instagram.com/nini_lamode?igsh=MTgzbnUzMnpwcmZnMQ==" target="_blank" rel="noopener noreferrer" aria-label="Nini La Mode on Instagram">
             <InstagramIcon />
           </a>
-          <Link href="/contact" aria-label="Email">
+          <a href="mailto:info@ninilamode.com" aria-label="Email Nini La Mode">
             <MailIcon />
-          </Link>
+          </a>
         </div>
       </div>
       <p className="copyright">
