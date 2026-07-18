@@ -41,6 +41,16 @@ export async function syncBrevoContact(email: string) {
   return true;
 }
 
+export async function unsubscribeBrevoContact(email: string) {
+  const config = configuration();
+  if (!config) return false;
+  await brevoRequest(`/contacts/lists/${config.listId}/contacts/remove`, {
+    method: "POST",
+    body: JSON.stringify({ emails: [email] }),
+  });
+  return true;
+}
+
 export async function syncBrevoContacts(emails: string[]) {
   if (!configuration()) return false;
   for (let index = 0; index < emails.length; index += 10) {
@@ -77,4 +87,3 @@ export async function sendNewProductCampaign(product: Product) {
   await brevoRequest(`/emailCampaigns/${campaign.id}/sendNow`, { method: "POST" });
   return campaign.id;
 }
-
